@@ -1,3 +1,4 @@
+import { TodoHttpService } from './todo-http.service';
 import { Injectable } from '@angular/core';
 import { ToDoItem } from '../model/ToDoItem';
 import { TodoStoreService } from './todo-store.service';
@@ -12,16 +13,30 @@ export class TodoService {
   private currentId: number = 0;
 
   private _todoItems: Array<ToDoItem>;
+  public getAllFailMessage: string;
+  public createFailMessage: string;
+  public updateFailMessage: string;
 
-  constructor(private todoStore: TodoStoreService) {
+  constructor(private todoStore: TodoStoreService, private todoHttpService: TodoHttpService) {
     this._todoItems = todoStore.GetAll();
-    this.updatingToDoItem = new ToDoItem(-1, "", "", false);
-    this.selectedTodoItem = new ToDoItem(-1, "", "", false);
-    this.currentId = this.todoItems.length;
+    this.updatingToDoItem = new ToDoItem(-1, '', '', false);
+    this.selectedTodoItem = new ToDoItem(-1, '', '', false);
+    this.getAllFailMessage = '';
+    this.createFailMessage = '';
+    this.updateFailMessage = '';
+    // this.currentId = this.todoItems.length;
   }
 
+
   public get todoItems(): Array<ToDoItem> {
-    return this.todoStore.GetAll();
+      const allTodoItem = new Array<ToDoItem>();
+      this.todoHttpService.GetAll().subscribe(todoItems => {
+        allTodoItem.push(...todoItems);
+      },
+      error => {
+        this.getAllFailMessage = 'Get all fail because web api error';
+      });
+      return allTodoItem;
   }
 
   public SetUpdatingTodoItemId(id: number): void {
@@ -33,21 +48,29 @@ export class TodoService {
   }
 
   public Create(todoItem: ToDoItem) {
-    todoItem.id = this.currentId;
-    var newTodoItem = Object.assign({}, todoItem);
-    this.todoStore.Create(newTodoItem);
-    this.currentId++;
+    this.todoHttpService.Create(todoItem).subscribe(todoitem => {
+      console.log(todoitem);
+      this.createFailMessage = '';
+    },
+    error => {
+      this.createFailMessage = 'Create fail because web api error';
+    });
   }
 
   public UpdateTodoItem(updateTodoItems: ToDoItem): void {
-    this.todoStore.Update(updateTodoItems);
+    this.todoHttpService.Update(updateTodoItems).subscribe(todoitem => {
+      console.log(todoitem);
+    },
+    error => {
+      this.updateFailMessage = 'Update fail because web api error';
+    });
   }
 
-  public DeleteTodoItem(id: number):void{
+  public DeleteTodoItem(id: number): void{
     this.todoStore.Delete(id);
   }
 
-  public SetSelectedTodoItemId(id: number):void{
+  public SetSelectedTodoItemId(id: number): void{
     this.selectedTodoItem = this.todoStore.FindById(id);
   }
 }

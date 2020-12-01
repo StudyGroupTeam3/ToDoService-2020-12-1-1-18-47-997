@@ -1,3 +1,4 @@
+import { TodoHttpService } from './todo-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { defer, of } from 'rxjs';
@@ -8,47 +9,111 @@ import { TodoService } from './todo.service';
 describe('TodoService', () => {
 
   let service: TodoService;
-  let httpClientSpy: { get: jasmine.Spy };
+  // 定义Spy client
+  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy };
   let todoStoreService: TodoStoreService;
+  let todoHttpService: TodoHttpService;
 
   beforeEach(() => {
     // TODO: spy on other methods too
+    // httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
     todoStoreService = new TodoStoreService();
+    todoHttpService = new TodoHttpService(httpClientSpy as any);
 
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TodoService);
+    // const expectAllTodoItems = todoStoreService.GetAll();
+    // httpClientSpy.get.and.returnValue(of(expectAllTodoItems)); // 给httpClient加行为，在get的时候返回returnValue
+
+    service = new TodoService(todoStoreService, todoHttpService);
+
+    // TestBed.configureTestingModule({});
+    // service = TestBed.inject(TodoService);
   });
+
+  function asyncData<T>(data: T) {
+    return defer(() => Promise.resolve(data));
+  }
+  function asyncError<T>(errorObject: any) {
+    return defer(() => Promise.reject(errorObject));
+  }
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
+  // 断言是否在后端调用了http get方法
   it('should get all todoitems', () => {
+    const expectAllTodoItems = todoStoreService.GetAll();
+    httpClientSpy.get.and.returnValue(of(expectAllTodoItems)); // 给httpClient加行为，在get的时候返回returnValue
     expect(service.todoItems.length).toBe(5);
+    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call'); // 调用一次
   });
 
-  it('should create todo-item via mockhttp', () => {
-    const newTodoItem = new ToDoItem(10, "new todo", "new todo description", false);
-    service.Create(newTodoItem);
-    expect(service.todoItems.length).toBe(6);
-    expect(service.todoItems[5].id === newTodoItem.id);
-    expect(service.todoItems[5].title === newTodoItem.title);
-    expect(service.todoItems[5].description === newTodoItem.description);
-    expect(service.todoItems[5].isDone === newTodoItem.isDone);
-  });
+  it('should process error response ', fakeAsync(() => {
+    // given 定义spy的行为
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.get.and.returnValue(asyncError(errorResponse));
+    // when
+    service.todoItems;
+    tick(50); // todoItems 调用 Get 方法返回数据， 需要等待一段时间，数据全部传过来，所以要用tick
+    // then
+    expect(service.getAllFailMessage).toBe('Get all fail because web api error');
+  }));
 
-  it('should update todo-item', () => {
-    const updateTodoItem = service.todoItems[0];
-    updateTodoItem.description = "updated description";
-    updateTodoItem.title = "updated title";
-    updateTodoItem.isDone = true;
+
+  it('should create todo-item via mockhttp', fakeAsync(() => {
+   // given
+   const todoItem = new ToDoItem(1, 'name', 'name', false);
+   // when
+   httpClientSpy.post.and.returnValue(of(todoItem));
+   service.Create(todoItem);
+   tick(50);
+   // then
+   expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+  }));
+
+  it('should process error response when create fail', fakeAsync(() => {
+    const todoItem = new ToDoItem(1, 'name', 'name', false);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 400 error',
+      status: 400, statusText: 'bad request'
+    });
+    httpClientSpy.post.and.returnValue(asyncError(errorResponse));
+    // when
+    service.Create(todoItem);
+    tick(50);
+    // then
+    expect(service.createFailMessage).toBe('Create fail because web api error');
+  }));
+
+  it('should update todo-item', fakeAsync(() => {
+    // given
+    const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
+    // when
+    httpClientSpy.put.and.returnValue(of(updateTodoItem));
     service.UpdateTodoItem(updateTodoItem);
-    expect(service.todoItems.length).toBe(5);
-    expect(service.todoItems[0].description).toBe(updateTodoItem.description);
-    expect(service.todoItems[0].title).toBe(updateTodoItem.title);
-    expect(service.todoItems[0].isDone).toBe(updateTodoItem.isDone);
-  });
+    tick(50);
+    // then
+    expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
+   }));
+
+  it('should process error response when update fail', fakeAsync(() => {
+    const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 400 error',
+      status: 400, statusText: 'bad request'
+    });
+    httpClientSpy.put.and.returnValue(asyncError(errorResponse));
+    // when
+    service.UpdateTodoItem(updateTodoItem);
+    tick(50);
+    // then
+    expect(service.updateFailMessage).toBe('Update fail because web api error');
+  }));
+
 
   it('should delete todo item', () => {
     const id = service.todoItems[0].id;

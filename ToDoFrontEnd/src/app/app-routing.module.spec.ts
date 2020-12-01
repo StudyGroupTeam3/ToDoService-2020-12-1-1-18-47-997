@@ -1,8 +1,8 @@
-import { Location } from "@angular/common";
-import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { Router } from "@angular/router";
-import { routes } from './app-routing.module'
+import { Location } from '@angular/common';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { routes } from './app-routing.module';
 import { CreateTodoitemComponent } from './create-todoitem/create-todoitem.component';
 import { ListTodoitemComponent } from './list-todoitem/list-todoitem.component';
 import { TodoitemDetailComponent } from './todoitem-detail/todoitem-detail.component';

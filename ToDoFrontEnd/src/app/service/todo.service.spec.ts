@@ -39,6 +39,7 @@ describe('TodoService', () => {
     const expectAllTodoItems = todoStoreService.GetAll();
     httpClientSpy.get.and.returnValue(of(expectAllTodoItems));
     expect(service.todoItems.length).toBe(5);
+    expect(httpClientSpy.get.calls.count()).toBe(1);
   });
 
   it('should create todo-item via mockhttp', () => {

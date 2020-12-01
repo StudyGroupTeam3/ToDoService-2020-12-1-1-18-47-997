@@ -52,7 +52,7 @@ describe('TodoService', () => {
     // when
     service.todoItems;
     // then
-    tick(500);
+    tick(0);// tick(0)也能过，但是必须tick()，保证消息队列中的操作机制
     expect(service.getAllFailMessage).toBe('Get all fails bucause webapi error');
   }));
 

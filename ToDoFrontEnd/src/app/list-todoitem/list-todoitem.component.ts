@@ -13,7 +13,7 @@ export class ListTodoitemComponent implements OnInit {
 
   public toDoItems: ToDoItem[]
 
-  constructor(private todoService: TodoService,
+  constructor(public todoService: TodoService,
     private route: Router) {
     this.toDoItems = [];
   }

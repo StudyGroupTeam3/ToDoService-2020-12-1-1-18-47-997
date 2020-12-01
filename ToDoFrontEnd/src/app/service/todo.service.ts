@@ -10,6 +10,7 @@ export class TodoService {
 
   public updatingToDoItem: ToDoItem;
   public selectedTodoItem: ToDoItem;
+  public getAllFailMessage: string;
   private currentId: number = 0;
 
   private _todoItems: Array<ToDoItem>;
@@ -19,14 +20,18 @@ export class TodoService {
     this._todoItems = todoStore.GetAll();
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
-    this.currentId = this.todoItems.length;
+    this.getAllFailMessage = '';
+    // this.currentId = this.todoItems.length;
   }
 
   public get todoItems(): Array<ToDoItem> {
     const allTodoItem = new Array<ToDoItem>();
     this.todoHttpService.getAll().subscribe(todoItems => {
       allTodoItem.push(...todoItems);
-    });
+    },
+      error => {
+        this.getAllFailMessage = 'get all fail because webapi error';
+      });
     return allTodoItem;
   }
 
@@ -49,11 +54,11 @@ export class TodoService {
     this.todoStore.Update(updateTodoItems);
   }
 
-  public DeleteTodoItem(id: number):void{
+  public DeleteTodoItem(id: number): void {
     this.todoStore.Delete(id);
   }
 
-  public SetSelectedTodoItemId(id: number):void{
+  public SetSelectedTodoItemId(id: number): void {
     this.selectedTodoItem = this.todoStore.FindById(id);
   }
 }

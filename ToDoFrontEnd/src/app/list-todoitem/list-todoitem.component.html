@@ -34,11 +34,12 @@
         </td>
         <td>
             <button (click)="updateTodoItem(todoItem.id)">Update</button>
-            <button (click)="deleteTodoItem(todoItem.id)">Delete</button>
+            <button (click)="deleteTodoItem(todoItem.id)" (click) = "reload()">Delete</button>
             <button (click)="selectTodoItem(todoItem.id)">Detail</button>
         </td>
     </tr>
 </table>
 
 <h1>{{todoService.getAllFailMessage}}</h1>
+<h1>{{todoService.deleteFailMessage}}</h1>
 

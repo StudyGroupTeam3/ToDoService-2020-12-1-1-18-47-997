@@ -35,4 +35,7 @@ export class ListTodoitemComponent implements OnInit {
     this.router.navigate(['detail/', id]);
     // this.todoService.SetSelectedTodoItemId(id);
   }
+  public reload(): void {
+    window.location.reload();
+  }
 }

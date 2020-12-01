@@ -137,9 +137,12 @@ describe('TodoService', () => {
     expect(service.deleteFailMessage).toBe("delete fail because web api error");
   }));
 
-  it('should get special todo item', () => {
-    const id = service.todoItems[4].id;
-    service.SetSelectedTodoItemId(id);
-    expect(service.selectedTodoItem.id).toBe(id);
+  it('should get todoitem by id', () => {
+    const allTodoItems = todoStoreService.GetAll();
+    const expectedItem = allTodoItems[0];
+    httpClientSpy.get.and.returnValue(of(expectedItem)); // moq set up method return
+    service.SetSelectedTodoItemId(12);
+    expect(service.selectedTodoItem).toBe(expectedItem);
+    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
   });
 });

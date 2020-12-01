@@ -38,17 +38,14 @@ export class TodoService {
   }// get 可以暴露双向绑定
 
   public SetUpdatingTodoItemId(id: number): void {
-    const foundTodoItem = this.todoStore.FindById(id);
-
-    if (foundTodoItem !== undefined) {
-      this.updatingToDoItem = Object.assign({}, foundTodoItem);
-    }
+    this.todoHttpService.GetById(id).subscribe(todoItem => {
+      Object.assign({}, this.updatingToDoItem);
+    });
   }
 
   public Create(todoItem: ToDoItem) {
     this.todoHttpService.Create(todoItem).subscribe(
       todoItem => {
-        console.log(todoItem);
         this.getAllFailMessage = '';
       },
       error => {
@@ -60,7 +57,6 @@ export class TodoService {
   public UpdateTodoItem(updateTodoItem: ToDoItem): void {
     this.todoHttpService.Update(updateTodoItem).subscribe(
       todoItem => {
-        console.log(todoItem);
         this.getAllFailMessage = '';
       },
       error => {
@@ -72,7 +68,6 @@ export class TodoService {
   public DeleteTodoItem(id: number): void {
     this.todoHttpService.Delete(id).subscribe(
       (todoItem: any) => {
-        console.log(todoItem);
         this.getAllFailMessage = '';
       },
       error => {

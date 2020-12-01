@@ -18,6 +18,7 @@ export class TodoService {
   public createFailMessage: string;
   public updateFailMessage: string;
   public getByIdFailMessage: string;
+  public deleteFailMessage: string;
 
   constructor(private todoStore: TodoStoreService, private todoHttpService: TodoHttpService) {
     this._todoItems = todoStore.GetAll();
@@ -27,6 +28,7 @@ export class TodoService {
     this.createFailMessage = '';
     this.updateFailMessage = '';
     this.getByIdFailMessage = '';
+    this.deleteFailMessage = '';
     // this.currentId = this.todoItems.length;
   }
 
@@ -70,8 +72,13 @@ export class TodoService {
     });
   }
 
-  public DeleteTodoItem(id: number): void{
-    this.todoStore.Delete(id);
+  public DeleteTodoItem(id: number): void {
+    this.todoHttpService.Delete(id).subscribe(todoitem => {
+      this.deleteFailMessage = '';
+    },
+    error => {
+      this.deleteFailMessage = 'Delete fail because web api error';
+    });
   }
 
   public SetSelectedTodoItemId(id: number): void {

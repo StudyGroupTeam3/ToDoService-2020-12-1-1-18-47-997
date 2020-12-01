@@ -17,7 +17,7 @@ describe('TodoService', () => {
   beforeEach(() => {
     // TODO: spy on other methods too
     // httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
     todoStoreService = new TodoStoreService();
     todoHttpService = new TodoHttpService(httpClientSpy as any);
 
@@ -139,16 +139,28 @@ describe('TodoService', () => {
     expect(service.getByIdFailMessage).toBe('Get By Id fail because web api error');
   }));
 
+  it('should delete todo item', fakeAsync(() => {
+    // given
+    const todoItem = new ToDoItem(1, 'name', 'name', true);
+    httpClientSpy.delete.and.returnValue(of(todoItem));
+    // when
+    service.DeleteTodoItem(todoItem.id);
+    tick(50);
+    // then
+    expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
+  }));
 
-  it('should delete todo item', () => {
-    const id = service.todoItems[0].id;
-    service.DeleteTodoItem(id);
-    expect(service.todoItems.length).toBe(4);
-  });
-
-  // it('should get special todo item', () => {
-  //   const id = service.todoItems[4].id;
-  //   service.SetSelectedTodoItemId(id);
-  //   expect(service.selectedTodoItem.id).toBe(id);
-  // });
+  it('should process error response when delete fail', fakeAsync(() => {
+    const todoItem = new ToDoItem(1, 'name', 'name', true);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.delete.and.returnValue(asyncError(errorResponse));
+    // when
+    service.DeleteTodoItem(todoItem.id);
+    tick(50);
+    // then
+    expect(service.deleteFailMessage).toBe('Delete fail because web api error');
+  }));
 });

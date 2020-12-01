@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { ToDoItem } from './../model/ToDoItem';
 import { tick } from '@angular/core/testing';
-import { defer, of, range } from 'rxjs';
+import { defer, of } from 'rxjs';
 import { TodoHttpService } from './todo-http.service';
 import { TodoStoreService } from './todo-store.service';
 import { TodoService } from './todo.service';
@@ -116,10 +116,8 @@ describe('TodoService', () => {
 
   it('should delete todo item', () => {
     // given
-    const items = todoStoreService.GetAll();
-    httpClientSpy.get.and.returnValue(of(items));
-    const id = items[0].id;
-    httpClientSpy.delete.and.returnValue(of(items[0]));
+    const id = 1;
+    httpClientSpy.delete.and.returnValue(of(id));
 
     // when
     service.DeleteTodoItem(id);
@@ -130,10 +128,7 @@ describe('TodoService', () => {
 
   it('should get error when delete todo item', fakeAsync(() => {
     // given
-    const items = todoStoreService.GetAll();
-    httpClientSpy.get.and.returnValue(of(items));
-    const id = items[0].id;
-
+    const id = 1;
     const errorResponse = new HttpErrorResponse({
       error: 'test 404 error',
       status: 404, statusText: 'Not Found'
@@ -150,11 +145,11 @@ describe('TodoService', () => {
 
   it('should get special todo item', () => {
     // given
-    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
-    httpClientSpy.get.and.returnValue(of(newTodoItem));
+    const id = 1;
+    httpClientSpy.get.and.returnValue(of(id));
 
     // when
-    service.SetSelectedTodoItemId(newTodoItem.id);
+    service.SetSelectedTodoItemId(id);
 
     // then
     expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
@@ -162,8 +157,7 @@ describe('TodoService', () => {
 
   it('should get error when get special todo item', fakeAsync(() => {
     // given
-    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
-    httpClientSpy.get.and.returnValue(of(newTodoItem));
+    const id = 1;
     const errorResponse = new HttpErrorResponse({
       error: 'test 404 error',
       status: 404, statusText: 'Not Found'
@@ -171,7 +165,7 @@ describe('TodoService', () => {
     httpClientSpy.get.and.returnValue(asyncError(errorResponse));
 
     // when
-    service.SetSelectedTodoItemId(newTodoItem.id);
+    service.SetSelectedTodoItemId(id);
     tick(100);
 
     // then

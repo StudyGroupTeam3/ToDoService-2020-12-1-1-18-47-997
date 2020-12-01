@@ -10,12 +10,11 @@ export class TodoService {
 
   public updatingToDoItem: ToDoItem;
   public selectedTodoItem: ToDoItem;
-  public getAllFailMessage: string;
-  public error: string;
-  public updateError: string;
-  public deleteError: string;
-  public getByIdError: string;
-  private currentId: number = 0;
+  public getAllFailMessage = '';
+  public error = '';
+  public updateError = '';
+  public deleteError = '';
+  public getByIdError = '';
 
   private _todoItems: Array<ToDoItem>;
 
@@ -24,12 +23,6 @@ export class TodoService {
     this._todoItems = todoStore.GetAll();
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
-    this.getAllFailMessage = '';
-    this.error = '';
-    this.updateError = '';
-    this.deleteError = '';
-    this.getByIdError = '';
-    // this.currentId = this.todoItems.length;
   }
 
   public get todoItems(): Array<ToDoItem> {
@@ -52,20 +45,14 @@ export class TodoService {
   }
 
   public Create(todoItem: ToDoItem) {
-    // todoItem.id = this.currentId;
-    // // tslint:disable-next-line: prefer-const
-    // let newTodoItem = Object.assign({}, todoItem);
-    // this.todoStore.Create(newTodoItem);
-    // this.currentId++;
     this.error = '';
-    this.todoHttpService.create(todoItem).subscribe(todoItem =>
-      {
-        console.log(todoItem);
-      },
+    this.todoHttpService.create(todoItem).subscribe(item => {
+      console.log(item);
+    },
       error => {
         this.error = 'get error';
       }
-      );
+    );
   }
 
   public UpdateTodoItem(updateTodoItems: ToDoItem): void {
@@ -75,7 +62,6 @@ export class TodoService {
     }, error => {
       this.updateError = 'update error';
     });
-    // this.todoStore.Update(updateTodoItems);
   }
 
   public DeleteTodoItem(id: number): void {
@@ -85,16 +71,14 @@ export class TodoService {
     }, error => {
       this.deleteError = 'delete error';
     });
-    // this.todoStore.Delete(id);
   }
 
   public SetSelectedTodoItemId(id: number): void {
     this.getByIdError = '';
-    this.todoHttpService.get(id).subscribe(item => {
+    this.todoHttpService.getById(id).subscribe(item => {
       console.log(item);
     }, error => {
       this.getByIdError = 'get by id error';
     });
-    // this.selectedTodoItem = this.todoStore.FindById(id);
   }
 }

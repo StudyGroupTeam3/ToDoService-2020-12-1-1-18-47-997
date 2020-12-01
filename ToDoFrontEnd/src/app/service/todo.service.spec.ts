@@ -145,4 +145,22 @@ describe('TodoService', () => {
     expect(service.selectedTodoItem).toBe(expectedItem);
     expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
   });
+
+  it('should process error response when GetById fail', fakeAsync(() => {
+    // given
+    const id = 0;
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+
+    httpClientSpy.get.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.SetSelectedTodoItemId(id);
+    tick(10);  //set a time out to wait for the get all method
+
+    // then
+    expect(service.getByIdFailMessage).toBe("getById fail because web api error");
+  }));
 });

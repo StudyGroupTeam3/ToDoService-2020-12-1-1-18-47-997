@@ -8,7 +8,7 @@ import { UpdateTodoItemComponent } from './update-todo-item/update-todo-item.com
 
 export const routes: Routes = [
   { path: "", component: ListTodoitemComponent },
-  { path: "create/:id", component: CreateTodoitemComponent },
+  { path: "create", component: CreateTodoitemComponent },
   { path: "edit/:id", component: UpdateTodoItemComponent },
   { path: "detail/:id", component: TodoitemDetailComponent },
 ];

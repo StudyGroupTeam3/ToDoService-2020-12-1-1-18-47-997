@@ -14,10 +14,11 @@ export class ListTodoitemComponent implements OnInit {
   public toDoItems: ToDoItem[]
 
   constructor(public todoService: TodoService, private router: Router) {
-    this.toDoItems = [];
+    this.toDoItems = new Array<ToDoItem>();
   }
 
   ngOnInit(): void {
+    this.toDoItems = new Array<ToDoItem>();
     this.toDoItems = this.todoService.todoItems;
   }
 
@@ -29,7 +30,6 @@ export class ListTodoitemComponent implements OnInit {
   public deleteTodoItem(id: number): void {
     this.todoService.DeleteTodoItem(id);
     this.ngOnInit();
-    this.toDoItems = this.todoService.todoItems;
   }
 
   public selectTodoItem(id: number): void {

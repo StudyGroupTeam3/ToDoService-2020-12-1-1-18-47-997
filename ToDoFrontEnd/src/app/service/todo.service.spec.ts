@@ -1,8 +1,8 @@
 import { fakeAsync } from '@angular/core/testing';
+import { ToDoItem } from './../model/ToDoItem';
 import { tick } from '@angular/core/testing';
-import { defer, of } from 'rxjs';
+import { defer, of, range } from 'rxjs';
 import { TodoHttpService } from './todo-http.service';
-import { ToDoItem } from '../model/ToDoItem';
 import { TodoStoreService } from './todo-store.service';
 import { TodoService } from './todo.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 describe('TodoService', () => {
 
   let service: TodoService;
-  let httpClientSpy: { get: jasmine.Spy };
+  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy };
   let todoStoreService: TodoStoreService;
   let todoHttpService: TodoHttpService;
 
@@ -30,7 +30,6 @@ describe('TodoService', () => {
   function asyncError<T>(errorObject: any) {
     return defer(() => Promise.reject(errorObject));
   }
-
 
   it('should be created', () => {
     expect(service).toBeTruthy();
@@ -61,25 +60,44 @@ describe('TodoService', () => {
   }));
 
   it('should create todo-item via mockhttp', () => {
+    // given
     const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    httpClientSpy.post.and.returnValue(of(newTodoItem));
+
+    // when
     service.Create(newTodoItem);
-    expect(service.todoItems.length).toBe(6);
-    expect(service.todoItems[5].id === newTodoItem.id);
-    expect(service.todoItems[5].title === newTodoItem.title);
-    expect(service.todoItems[5].description === newTodoItem.description);
-    expect(service.todoItems[5].isDone === newTodoItem.isDone);
+
+    // then
+    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
   });
 
+  it('should create error when create 5 times via mockhttp', fakeAsync(() => {
+    // given
+    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.post.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.Create(newTodoItem);
+    tick(50);
+
+    // then
+    expect(service.error).toBe('get error');
+  }));
+
   it('should update todo-item', () => {
-    const updateTodoItem = service.todoItems[0];
-    updateTodoItem.description = 'updated description';
-    updateTodoItem.title = 'updated title';
-    updateTodoItem.isDone = true;
+    // given
+    const updateTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    httpClientSpy.put.and.returnValue(of(updateTodoItem));
+
+    // when
     service.UpdateTodoItem(updateTodoItem);
-    expect(service.todoItems.length).toBe(5);
-    expect(service.todoItems[0].description).toBe(updateTodoItem.description);
-    expect(service.todoItems[0].title).toBe(updateTodoItem.title);
-    expect(service.todoItems[0].isDone).toBe(updateTodoItem.isDone);
+
+    // then
+    expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
   });
 
   it('should delete todo item', () => {

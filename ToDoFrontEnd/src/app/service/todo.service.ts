@@ -11,6 +11,7 @@ export class TodoService {
   public updatingToDoItem: ToDoItem;
   public selectedTodoItem: ToDoItem;
   public getAllFailMessage: string;
+  public error: string;
   private currentId: number = 0;
 
   private _todoItems: Array<ToDoItem>;
@@ -21,6 +22,7 @@ export class TodoService {
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
     this.getAllFailMessage = '';
+    this.error = '';
     // this.currentId = this.todoItems.length;
   }
 
@@ -44,11 +46,20 @@ export class TodoService {
   }
 
   public Create(todoItem: ToDoItem) {
-    todoItem.id = this.currentId;
-    // tslint:disable-next-line: prefer-const
-    let newTodoItem = Object.assign({}, todoItem);
-    this.todoStore.Create(newTodoItem);
-    this.currentId++;
+    // todoItem.id = this.currentId;
+    // // tslint:disable-next-line: prefer-const
+    // let newTodoItem = Object.assign({}, todoItem);
+    // this.todoStore.Create(newTodoItem);
+    // this.currentId++;
+
+    this.todoHttpService.create(todoItem).subscribe(todoItem =>
+      {
+        console.log(todoItem);
+      },
+      error => {
+        this.error = 'get error';
+      }
+      );
   }
 
   public UpdateTodoItem(updateTodoItems: ToDoItem): void {

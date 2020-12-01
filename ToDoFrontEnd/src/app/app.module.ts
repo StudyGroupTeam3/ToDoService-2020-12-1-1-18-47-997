@@ -16,7 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
     CreateTodoitemComponent,
     ListTodoitemComponent,
     TodoitemDetailComponent,
-    UpdateTodoItemComponent,    
+    UpdateTodoItemComponent,
   ],
   imports: [
     BrowserModule,

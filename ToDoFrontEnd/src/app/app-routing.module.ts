@@ -6,11 +6,11 @@ import { CreateTodoitemComponent } from './create-todoitem/create-todoitem.compo
 import { UpdateTodoItemComponent } from './update-todo-item/update-todo-item.component';
 
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: "", component: ListTodoitemComponent },
-  { path: "create", component: CreateTodoitemComponent },
+  { path: "create/:id", component: CreateTodoitemComponent },
   { path: "edit/:id", component: UpdateTodoItemComponent },
-  { path: "detail", component: TodoitemDetailComponent },
+  { path: "detail/:id", component: TodoitemDetailComponent },
 ];
 
 @NgModule({

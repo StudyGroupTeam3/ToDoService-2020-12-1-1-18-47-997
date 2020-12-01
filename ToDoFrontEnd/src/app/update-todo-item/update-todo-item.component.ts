@@ -15,7 +15,7 @@ export class UpdateTodoItemComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.router.snapshot.paramMap.get('id');
-    this.todoItemService.SetSelectedTodoItemId(Number(id));
+    this.todoItemService.SetUpdatingTodoItemId(Number(id));
   }
 
   public updateTodoItem(): void {

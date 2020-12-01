@@ -17,6 +17,7 @@ export class TodoService {
   public getAllFailMessage: string;
   public createFailMessage: string;
   public updateFailMessage: string;
+  public getByIdFailMessage: string;
 
   constructor(private todoStore: TodoStoreService, private todoHttpService: TodoHttpService) {
     this._todoItems = todoStore.GetAll();
@@ -25,6 +26,7 @@ export class TodoService {
     this.getAllFailMessage = '';
     this.createFailMessage = '';
     this.updateFailMessage = '';
+    this.getByIdFailMessage = '';
     // this.currentId = this.todoItems.length;
   }
 
@@ -75,6 +77,10 @@ export class TodoService {
   public SetSelectedTodoItemId(id: number): void {
     this.todoHttpService.FindById(id).subscribe(todoitem => {
         this.selectedTodoItem = todoitem;
+        this.getByIdFailMessage = '';
+    },
+    error => {
+      this.getByIdFailMessage = 'Get By Id fail because web api error';
     });
   }
 }

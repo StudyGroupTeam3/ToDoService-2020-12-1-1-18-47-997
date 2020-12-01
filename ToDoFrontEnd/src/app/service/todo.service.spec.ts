@@ -78,8 +78,8 @@ describe('TodoService', () => {
   it('should process error response when create fail', fakeAsync(() => {
     const todoItem = new ToDoItem(1, 'name', 'name', false);
     const errorResponse = new HttpErrorResponse({
-      error: 'test 400 error',
-      status: 400, statusText: 'bad request'
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
     });
     httpClientSpy.post.and.returnValue(asyncError(errorResponse));
     // when
@@ -103,8 +103,8 @@ describe('TodoService', () => {
   it('should process error response when update fail', fakeAsync(() => {
     const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
     const errorResponse = new HttpErrorResponse({
-      error: 'test 400 error',
-      status: 400, statusText: 'bad request'
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
     });
     httpClientSpy.put.and.returnValue(asyncError(errorResponse));
     // when
@@ -118,25 +118,25 @@ describe('TodoService', () => {
     // given
     const todoItem = new ToDoItem(1, 'name', 'name', true);
     httpClientSpy.get.and.returnValue(of(todoItem));
-    const id = todoItem.id;
     // when
-    service.SetSelectedTodoItemId(id);
+    service.SetSelectedTodoItemId(todoItem.id);
+    tick(50);
     // then
     expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
   }));
 
   it('should process error response when get by id fail', fakeAsync(() => {
-    const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
+    const todoItem = new ToDoItem(1, 'name', 'name', true);
     const errorResponse = new HttpErrorResponse({
-      error: 'test 400 error',
-      status: 400, statusText: 'bad request'
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
     });
-    httpClientSpy.put.and.returnValue(asyncError(errorResponse));
+    httpClientSpy.get.and.returnValue(asyncError(errorResponse));
     // when
-    service.UpdateTodoItem(updateTodoItem);
+    service.SetSelectedTodoItemId(todoItem.id);
     tick(50);
     // then
-    expect(service.updateFailMessage).toBe('Update fail because web api error');
+    expect(service.getByIdFailMessage).toBe('Get By Id fail because web api error');
   }));
 
 

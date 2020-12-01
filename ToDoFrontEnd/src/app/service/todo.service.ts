@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { ToDoItem } from './../model/ToDoItem';
 import { TodoHttpService } from './todo-http.service';
 import { Injectable } from '@angular/core';
@@ -20,7 +21,7 @@ export class TodoService {
   public getByIdFailMessage: string;
   public deleteFailMessage: string;
 
-  constructor(private todoStore: TodoStoreService, private todoHttpService: TodoHttpService) {
+  constructor(private todoStore: TodoStoreService, private todoHttpService: TodoHttpService, private router: Router) {
     this._todoItems = todoStore.GetAll();
     this.updatingToDoItem = new ToDoItem(-1, '', '', false);
     this.selectedTodoItem = new ToDoItem(-1, '', '', false);

@@ -16,7 +16,7 @@
             IsDone
         </td>
         <td>
-            Actionn
+            Action
         </td>
     </tr>
     <tr *ngFor='let todoItem of toDoItems'>
@@ -34,7 +34,7 @@
         </td>
         <td>
             <button (click)="updateTodoItem(todoItem.id)">Update</button>
-            <button (click)="deleteTodoItem(todoItem.id)">Delete</button>
+            <button (click)="deleteTodoItem(todoItem.id)" (click)="reload()">Delete</button>
             <button (click)="selectTodoItem(todoItem.id)">Detail</button>
         </td>
     </tr>

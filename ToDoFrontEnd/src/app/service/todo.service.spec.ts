@@ -65,6 +65,20 @@ describe('TodoService', () => {
     expect(httpClientSpy.post.calls.count()).toBe(1);
   });
 
+  it('should process error response when create todo-item via mockhttp fail', fakeAsync(() => {
+    // given
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    const newTodoItem = new ToDoItem(10, "new todo", "new todo description", false);
+    httpClientSpy.post.and.returnValue(asyncError(errorResponse));
+    service.Create(newTodoItem);
+    // then
+    tick(50);
+    expect(service.getAllFailMessage).toBe('Create fails bucause webapi error');
+  }));
+
   it('should update todo-item', () => {
     const updateTodoItem = service.todoItems[0];
     updateTodoItem.description = "updated description";

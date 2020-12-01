@@ -35,4 +35,10 @@ describe("Router", () => {
     tick(50);
     expect(location.path()).toBe('/edit/1');
   }))
+
+  it('navigate to "detail/1" redirects to detail/1', fakeAsync(() => {
+    router.navigate(['detail/1']);
+    tick(50);
+    expect(location.path()).toBe('/detail/1');
+  }))
 });

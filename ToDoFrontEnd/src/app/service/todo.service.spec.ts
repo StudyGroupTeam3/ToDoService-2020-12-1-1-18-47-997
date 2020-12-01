@@ -15,10 +15,9 @@ describe('TodoService', () => {
 
   beforeEach(() => {
     // TODO: spy on other methods too
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
     todoStoreService = new TodoStoreService();
     todoHttpService = new TodoHttpService(<any>httpClientSpy);
-
     service = new TodoService(todoStoreService, todoHttpService);
     // TestBed.configureTestingModule({});
     // service = TestBed.inject(TodoService);

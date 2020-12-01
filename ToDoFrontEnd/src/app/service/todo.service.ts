@@ -74,6 +74,9 @@ export class TodoService {
       (todoItem: any) => {
         console.log(todoItem);
         this.getAllFailMessage = '';
+      },
+      error => {
+        this.getAllFailMessage = 'Delete fails bucause webapi error';
       }
     );
   }

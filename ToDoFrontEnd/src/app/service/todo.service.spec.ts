@@ -109,6 +109,20 @@ describe('TodoService', () => {
     expect(httpClientSpy.delete.calls.count()).toBe(1);
   });
 
+  it('should process error response when delete todo-item fail', fakeAsync(() => {
+    // given
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.delete.and.returnValue(asyncError(errorResponse));
+    const id = 0;
+    service.DeleteTodoItem(id);
+    // then
+    tick(50);
+    expect(service.getAllFailMessage).toBe('Delete fails bucause webapi error');
+  }));
+
   it('should get special todo item', () => {
     const id = service.todoItems[4].id;
     service.SetSelectedTodoItemId(id);

@@ -24,11 +24,21 @@ describe('TodoService', () => {
     // service = TestBed.inject(TodoService);
   });
 
+  function asyncData<T>(data: T) {
+    return defer(() => Promise.resolve(data));
+  }
+
+  function asyncError<T>(errorObject: any) {
+    return defer(() => Promise.reject(errorObject));
+  }
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should get all todoitems', () => {
+    const expectAllTodoItems = todoStoreService.GetAll();
+    httpClientSpy.get.and.returnValue(of(expectAllTodoItems));
     expect(service.todoItems.length).toBe(5);
   });
 

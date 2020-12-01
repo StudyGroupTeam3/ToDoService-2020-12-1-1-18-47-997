@@ -18,7 +18,7 @@ export class TodoService {
     this._todoItems = todoStore.GetAll();
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
-    this.currentId = this.todoItems.length;
+    // this.currentId = this.todoItems.length;
   }
 
   public get todoItems(): Array<ToDoItem> {

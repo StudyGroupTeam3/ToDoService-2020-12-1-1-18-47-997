@@ -11,6 +11,7 @@ export class TodoService {
   public updatingToDoItem: ToDoItem;
   public selectedTodoItem: ToDoItem;
   private currentId: number = 0;
+  public getAllFailMessage: string;
 
   private _todoItems: Array<ToDoItem>;
 
@@ -19,13 +20,19 @@ export class TodoService {
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
     // this.currentId = this.todoItems.length;
+    this.getAllFailMessage = '';
   }
 
   public get todoItems(): Array<ToDoItem> {
     const allToDoItem = new Array<ToDoItem>();
-    this.todoHttpService.GetAll().subscribe(todoItems => {
-      allToDoItem.push(...todoItems);
-    });
+    this.todoHttpService.GetAll().subscribe(
+      todoItems => {
+        allToDoItem.push(...todoItems);
+      },
+      error => {
+        this.getAllFailMessage = 'Get all fails bucause webapi error';
+      }
+    );
     return allToDoItem;
   }// get 可以暴露双向绑定
 

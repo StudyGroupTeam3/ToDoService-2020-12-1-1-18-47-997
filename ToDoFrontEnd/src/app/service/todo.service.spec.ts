@@ -10,13 +10,13 @@ describe('TodoService', () => {
 
   let service: TodoService;
   // 定义Spy client
-  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy };
+  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy, delete: jasmine.Spy };
   let todoStoreService: TodoStoreService;
   let todoHttpService: TodoHttpService;
 
   beforeEach(() => {
     // TODO: spy on other methods too
-    // httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
+    // httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
     todoStoreService = new TodoStoreService();
     todoHttpService = new TodoHttpService(httpClientSpy as any);
@@ -114,6 +114,31 @@ describe('TodoService', () => {
     expect(service.updateFailMessage).toBe('Update fail because web api error');
   }));
 
+  it('should get special todo item', fakeAsync(() => {
+    // given
+    const todoItem = new ToDoItem(1, 'name', 'name', true);
+    httpClientSpy.get.and.returnValue(of(todoItem));
+    const id = todoItem.id;
+    // when
+    service.SetSelectedTodoItemId(id);
+    // then
+    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+  }));
+
+  it('should process error response when get by id fail', fakeAsync(() => {
+    const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 400 error',
+      status: 400, statusText: 'bad request'
+    });
+    httpClientSpy.put.and.returnValue(asyncError(errorResponse));
+    // when
+    service.UpdateTodoItem(updateTodoItem);
+    tick(50);
+    // then
+    expect(service.updateFailMessage).toBe('Update fail because web api error');
+  }));
+
 
   it('should delete todo item', () => {
     const id = service.todoItems[0].id;
@@ -121,9 +146,9 @@ describe('TodoService', () => {
     expect(service.todoItems.length).toBe(4);
   });
 
-  it('should get special todo item', () => {
-    const id = service.todoItems[4].id;
-    service.SetSelectedTodoItemId(id);
-    expect(service.selectedTodoItem.id).toBe(id);
-  });
+  // it('should get special todo item', () => {
+  //   const id = service.todoItems[4].id;
+  //   service.SetSelectedTodoItemId(id);
+  //   expect(service.selectedTodoItem.id).toBe(id);
+  // });
 });

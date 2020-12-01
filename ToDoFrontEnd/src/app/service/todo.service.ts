@@ -1,7 +1,8 @@
+import { ToDoItem } from './../model/ToDoItem';
 import { TodoHttpService } from './todo-http.service';
 import { Injectable } from '@angular/core';
-import { ToDoItem } from '../model/ToDoItem';
 import { TodoStoreService } from './todo-store.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,7 @@ export class TodoService {
     }
   }
 
-  public Create(todoItem: ToDoItem) {
+  public Create(todoItem: ToDoItem): void {
     this.todoHttpService.Create(todoItem).subscribe(todoitem => {
       console.log(todoitem);
       this.createFailMessage = '';
@@ -60,6 +61,7 @@ export class TodoService {
   public UpdateTodoItem(updateTodoItems: ToDoItem): void {
     this.todoHttpService.Update(updateTodoItems).subscribe(todoitem => {
       console.log(todoitem);
+      this.updateFailMessage = '';
     },
     error => {
       this.updateFailMessage = 'Update fail because web api error';
@@ -70,7 +72,9 @@ export class TodoService {
     this.todoStore.Delete(id);
   }
 
-  public SetSelectedTodoItemId(id: number): void{
-    this.selectedTodoItem = this.todoStore.FindById(id);
+  public SetSelectedTodoItemId(id: number): void {
+    this.todoHttpService.FindById(id).subscribe(todoitem => {
+        this.selectedTodoItem = todoitem;
+    });
   }
 }

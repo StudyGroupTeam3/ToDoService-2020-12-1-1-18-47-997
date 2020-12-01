@@ -9,13 +9,13 @@ import { TodoService } from './todo.service';
 describe('TodoService', () => {
 
   let service: TodoService;
-  let httpClientSpy: { get: jasmine.Spy };
+  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy };
   let todoStoreService: TodoStoreService;
   let todoHttpService: TodoHttpService;
 
   beforeEach(() => {
     // TODO: spy on other methods too
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
     todoStoreService = new TodoStoreService();
     todoHttpService = new TodoHttpService(<any>httpClientSpy);
     service = new TodoService(todoStoreService, todoHttpService);
@@ -57,13 +57,12 @@ describe('TodoService', () => {
   }));
 
   it('should create todo-item via mockhttp', () => {
+    // given
     const newTodoItem = new ToDoItem(10, "new todo", "new todo description", false);
+    httpClientSpy.post.and.returnValue(of(newTodoItem));
     service.Create(newTodoItem);
-    expect(service.todoItems.length).toBe(6);
-    expect(service.todoItems[5].id === newTodoItem.id);
-    expect(service.todoItems[5].title === newTodoItem.title);
-    expect(service.todoItems[5].description === newTodoItem.description);
-    expect(service.todoItems[5].isDone === newTodoItem.isDone);
+    // then
+    expect(httpClientSpy.post.calls.count()).toBe(1);
   });
 
   it('should update todo-item', () => {

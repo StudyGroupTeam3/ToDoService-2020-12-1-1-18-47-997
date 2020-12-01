@@ -39,7 +39,7 @@ export class TodoService {
 
   public SetUpdatingTodoItemId(id: number): void {
     this.todoHttpService.GetById(id).subscribe(todoItem => {
-      Object.assign({}, this.updatingToDoItem);
+      Object.assign(this.updatingToDoItem, todoItem);
     });
   }
 

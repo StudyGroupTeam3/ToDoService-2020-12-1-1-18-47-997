@@ -100,6 +100,23 @@ describe('TodoService', () => {
     expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
   });
 
+  it('should put error via mockhttp', fakeAsync(() => {
+    // given
+    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.put.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.UpdateTodoItem(newTodoItem);
+    tick(50);
+
+    // then
+    expect(service.updateError).toBe('update error');
+  }));
+
   it('should delete todo item', () => {
     const id = service.todoItems[0].id;
     service.DeleteTodoItem(id);

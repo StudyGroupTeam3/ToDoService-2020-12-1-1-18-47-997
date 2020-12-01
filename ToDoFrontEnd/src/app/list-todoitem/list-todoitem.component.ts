@@ -28,6 +28,8 @@ export class ListTodoitemComponent implements OnInit {
 
   public deleteTodoItem(id: number): void {
     this.todoService.DeleteTodoItem(id);
+    this.toDoItems = [];
+    this.toDoItems = this.todoService.todoItems;
   }
 
   public selectTodoItem(id: number): void {

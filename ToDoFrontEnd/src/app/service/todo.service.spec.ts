@@ -1,3 +1,4 @@
+import { ToDoItem } from './../model/ToDoItem';
 import { TodoHttpService } from './todo-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
@@ -13,6 +14,8 @@ describe('TodoService', () => {
   let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy, delete: jasmine.Spy };
   let todoStoreService: TodoStoreService;
   let todoHttpService: TodoHttpService;
+  let errorResponse: HttpErrorResponse;
+  let todoItem: ToDoItem;
 
   beforeEach(() => {
     // TODO: spy on other methods too
@@ -26,6 +29,13 @@ describe('TodoService', () => {
 
     service = new TodoService(todoStoreService, todoHttpService);
 
+    // given 定义spy的行为
+    errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+
+    todoItem = new ToDoItem(1, 'name', 'name', false);
     // TestBed.configureTestingModule({});
     // service = TestBed.inject(TodoService);
   });
@@ -50,11 +60,6 @@ describe('TodoService', () => {
   });
 
   it('should process error response ', fakeAsync(() => {
-    // given 定义spy的行为
-    const errorResponse = new HttpErrorResponse({
-      error: 'test 404 error',
-      status: 404, statusText: 'Not Found'
-    });
     httpClientSpy.get.and.returnValue(asyncError(errorResponse));
     // when
     service.todoItems;
@@ -77,10 +82,6 @@ describe('TodoService', () => {
 
   it('should process error response when create fail', fakeAsync(() => {
     const todoItem = new ToDoItem(1, 'name', 'name', false);
-    const errorResponse = new HttpErrorResponse({
-      error: 'test 404 error',
-      status: 404, statusText: 'Not Found'
-    });
     httpClientSpy.post.and.returnValue(asyncError(errorResponse));
     // when
     service.Create(todoItem);
@@ -102,10 +103,6 @@ describe('TodoService', () => {
 
   it('should process error response when update fail', fakeAsync(() => {
     const updateTodoItem = new ToDoItem(1, 'name', 'name', true);
-    const errorResponse = new HttpErrorResponse({
-      error: 'test 404 error',
-      status: 404, statusText: 'Not Found'
-    });
     httpClientSpy.put.and.returnValue(asyncError(errorResponse));
     // when
     service.UpdateTodoItem(updateTodoItem);
@@ -127,10 +124,6 @@ describe('TodoService', () => {
 
   it('should process error response when get by id fail', fakeAsync(() => {
     const todoItem = new ToDoItem(1, 'name', 'name', true);
-    const errorResponse = new HttpErrorResponse({
-      error: 'test 404 error',
-      status: 404, statusText: 'Not Found'
-    });
     httpClientSpy.get.and.returnValue(asyncError(errorResponse));
     // when
     service.SetSelectedTodoItemId(todoItem.id);
@@ -152,10 +145,6 @@ describe('TodoService', () => {
 
   it('should process error response when delete fail', fakeAsync(() => {
     const todoItem = new ToDoItem(1, 'name', 'name', true);
-    const errorResponse = new HttpErrorResponse({
-      error: 'test 404 error',
-      status: 404, statusText: 'Not Found'
-    });
     httpClientSpy.delete.and.returnValue(asyncError(errorResponse));
     // when
     service.DeleteTodoItem(todoItem.id);

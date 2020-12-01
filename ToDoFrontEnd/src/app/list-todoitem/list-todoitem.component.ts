@@ -28,7 +28,7 @@ export class ListTodoitemComponent implements OnInit {
 
   public deleteTodoItem(id: number): void {
     this.todoService.DeleteTodoItem(id);
-    this.toDoItems = [];
+    this.ngOnInit();
     this.toDoItems = this.todoService.todoItems;
   }
 

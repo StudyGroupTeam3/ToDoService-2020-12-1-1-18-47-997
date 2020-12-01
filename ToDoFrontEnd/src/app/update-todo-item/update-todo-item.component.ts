@@ -10,11 +10,11 @@ import { TodoService } from '../service/todo.service';
 })
 export class UpdateTodoItemComponent implements OnInit {
 
-  constructor(public todoItemService: TodoService, private rounter: ActivatedRoute) {
+  constructor(public todoItemService: TodoService, private router: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    const id = this.rounter.snapshot.paramMap.get('id');
+    const id = this.router.snapshot.paramMap.get('id');
     this.todoItemService.SetUpdatingTodoItemId(Number(id));
   }
 

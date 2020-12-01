@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CreateTodoitemComponent } from './create-todoitem/create-todoitem.component';
@@ -16,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
     CreateTodoitemComponent,
     ListTodoitemComponent,
     TodoitemDetailComponent,
-    UpdateTodoItemComponent,    
+    UpdateTodoItemComponent,
   ],
   imports: [
     BrowserModule,

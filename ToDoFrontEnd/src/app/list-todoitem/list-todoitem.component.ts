@@ -31,6 +31,7 @@ export class ListTodoitemComponent implements OnInit {
   }
 
   public selectTodoItem(id: number): void {
-    this.todoService.SetSelectedTodoItemId(id);
+    this.route.navigate(['detail', id]);
+    //this.todoService.SetSelectedTodoItemId(id);
   }
 }

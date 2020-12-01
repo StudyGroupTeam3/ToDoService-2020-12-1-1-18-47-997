@@ -13,6 +13,8 @@ export class TodoService {
   public getAllFailMessage: string;
   public error: string;
   public updateError: string;
+  public deleteError: string;
+  public getByIdError: string;
   private currentId: number = 0;
 
   private _todoItems: Array<ToDoItem>;
@@ -25,6 +27,8 @@ export class TodoService {
     this.getAllFailMessage = '';
     this.error = '';
     this.updateError = '';
+    this.deleteError = '';
+    this.getByIdError = '';
     // this.currentId = this.todoItems.length;
   }
 
@@ -75,10 +79,22 @@ export class TodoService {
   }
 
   public DeleteTodoItem(id: number): void {
-    this.todoStore.Delete(id);
+    this.deleteError = '';
+    this.todoHttpService.delete(id).subscribe(item => {
+      console.log(item);
+    }, error => {
+      this.deleteError = 'delete error';
+    });
+    // this.todoStore.Delete(id);
   }
 
   public SetSelectedTodoItemId(id: number): void {
-    this.selectedTodoItem = this.todoStore.FindById(id);
+    this.getByIdError = '';
+    this.todoHttpService.get(id).subscribe(item => {
+      console.log(item);
+    }, error => {
+      this.getByIdError = 'get by id error';
+    });
+    // this.selectedTodoItem = this.todoStore.FindById(id);
   }
 }

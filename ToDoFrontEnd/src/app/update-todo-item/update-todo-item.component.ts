@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class UpdateTodoItemComponent implements OnInit {
 
   constructor(public todoItemService: TodoService,
-    private router: ActivatedRoute) {
+              private router: ActivatedRoute) {
   }
 
   ngOnInit(): void {

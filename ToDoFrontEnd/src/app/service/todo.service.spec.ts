@@ -10,17 +10,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 describe('TodoService', () => {
 
   let service: TodoService;
-  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy };
+  let httpClientSpy: { get: jasmine.Spy, post: jasmine.Spy, put: jasmine.Spy, delete: jasmine.Spy};
   let todoStoreService: TodoStoreService;
   let todoHttpService: TodoHttpService;
 
   beforeEach(() => {
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
     todoStoreService = new TodoStoreService();
     todoHttpService = new TodoHttpService(httpClientSpy as any);
     service = new TodoService(todoStoreService, todoHttpService);
-    // TestBed.configureTestingModule({});
-    // service = TestBed.inject(TodoService);
   });
 
   // add part
@@ -51,7 +49,6 @@ describe('TodoService', () => {
     httpClientSpy.get.and.returnValue(asyncError(errorResponse));
 
     // when
-    // tslint:disable-next-line: no-unused-expression
     service.todoItems;
     tick(50);
 
@@ -100,7 +97,7 @@ describe('TodoService', () => {
     expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
   });
 
-  it('should put error via mockhttp', fakeAsync(() => {
+  it('should update error via mockhttp', fakeAsync(() => {
     // given
     const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
     const errorResponse = new HttpErrorResponse({
@@ -118,14 +115,66 @@ describe('TodoService', () => {
   }));
 
   it('should delete todo item', () => {
-    const id = service.todoItems[0].id;
+    // given
+    const items = todoStoreService.GetAll();
+    httpClientSpy.get.and.returnValue(of(items));
+    const id = items[0].id;
+    httpClientSpy.delete.and.returnValue(of(items[0]));
+
+    // when
     service.DeleteTodoItem(id);
-    expect(service.todoItems.length).toBe(4);
+
+    // then
+    expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
   });
 
+  it('should get error when delete todo item', fakeAsync(() => {
+    // given
+    const items = todoStoreService.GetAll();
+    httpClientSpy.get.and.returnValue(of(items));
+    const id = items[0].id;
+
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.delete.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.DeleteTodoItem(id);
+    tick(100);
+
+    // then
+    expect(service.deleteError).toBe('delete error');
+  }));
+
   it('should get special todo item', () => {
-    const id = service.todoItems[4].id;
-    service.SetSelectedTodoItemId(id);
-    expect(service.selectedTodoItem.id).toBe(id);
+    // given
+    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    httpClientSpy.get.and.returnValue(of(newTodoItem));
+
+    // when
+    service.SetSelectedTodoItemId(newTodoItem.id);
+
+    // then
+    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
   });
+
+  it('should get error when get special todo item', fakeAsync(() => {
+    // given
+    const newTodoItem = new ToDoItem(10, 'new todo', 'new todo description', false);
+    httpClientSpy.get.and.returnValue(of(newTodoItem));
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+    httpClientSpy.get.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.SetSelectedTodoItemId(newTodoItem.id);
+    tick(100);
+
+    // then
+    expect(service.getByIdError).toBe('get by id error');
+  }));
 });

@@ -57,8 +57,16 @@ export class TodoService {
     );
   }
 
-  public UpdateTodoItem(updateTodoItems: ToDoItem): void {
-    this.todoStore.Update(updateTodoItems);
+  public UpdateTodoItem(updateTodoItem: ToDoItem): void {
+    this.todoHttpService.Update(updateTodoItem).subscribe(
+      todoItem => {
+        console.log(todoItem);
+        this.getAllFailMessage = '';
+      },
+      error => {
+        this.getAllFailMessage = 'Update fails bucause webapi error';
+      }
+    );
   }
 
   public DeleteTodoItem(id: number): void {

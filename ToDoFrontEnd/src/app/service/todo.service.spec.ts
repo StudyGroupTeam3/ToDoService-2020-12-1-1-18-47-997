@@ -3,7 +3,6 @@ import { TodoHttpService } from './todo-http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { defer, of } from 'rxjs';
-import { ToDoItem } from '../model/ToDoItem';
 import { TodoStoreService } from './todo-store.service';
 import { TodoService } from './todo.service';
 
@@ -71,7 +70,6 @@ describe('TodoService', () => {
 
   it('should create todo-item via mockhttp', fakeAsync(() => {
    // given
-   const todoItem = new ToDoItem(1, 'name', 'name', false);
    // when
    httpClientSpy.post.and.returnValue(of(todoItem));
    service.Create(todoItem);
@@ -81,7 +79,6 @@ describe('TodoService', () => {
   }));
 
   it('should process error response when create fail', fakeAsync(() => {
-    const todoItem = new ToDoItem(1, 'name', 'name', false);
     httpClientSpy.post.and.returnValue(asyncError(errorResponse));
     // when
     service.Create(todoItem);
@@ -113,7 +110,6 @@ describe('TodoService', () => {
 
   it('should get special todo item', fakeAsync(() => {
     // given
-    const todoItem = new ToDoItem(1, 'name', 'name', true);
     httpClientSpy.get.and.returnValue(of(todoItem));
     // when
     service.SetSelectedTodoItemId(todoItem.id);
@@ -123,7 +119,6 @@ describe('TodoService', () => {
   }));
 
   it('should process error response when get by id fail', fakeAsync(() => {
-    const todoItem = new ToDoItem(1, 'name', 'name', true);
     httpClientSpy.get.and.returnValue(asyncError(errorResponse));
     // when
     service.SetSelectedTodoItemId(todoItem.id);
@@ -134,7 +129,6 @@ describe('TodoService', () => {
 
   it('should delete todo item', fakeAsync(() => {
     // given
-    const todoItem = new ToDoItem(1, 'name', 'name', true);
     httpClientSpy.delete.and.returnValue(of(todoItem));
     // when
     service.DeleteTodoItem(todoItem.id);
@@ -144,7 +138,6 @@ describe('TodoService', () => {
   }));
 
   it('should process error response when delete fail', fakeAsync(() => {
-    const todoItem = new ToDoItem(1, 'name', 'name', true);
     httpClientSpy.delete.and.returnValue(asyncError(errorResponse));
     // when
     service.DeleteTodoItem(todoItem.id);

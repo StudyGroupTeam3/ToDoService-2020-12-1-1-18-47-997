@@ -93,6 +93,24 @@ describe('TodoService', () => {
     expect(httpClientSpy.put.calls.count()).toBe(1);
   });
 
+  it('should process error response when update item fail', fakeAsync(() => {
+    // given
+    const newTodoItem = new ToDoItem(10, "new todo", "new todo description", false);
+    const errorResponse = new HttpErrorResponse({
+      error: 'test 404 error',
+      status: 404, statusText: 'Not Found'
+    });
+
+    httpClientSpy.put.and.returnValue(asyncError(errorResponse));
+
+    // when
+    service.UpdateTodoItem(newTodoItem);
+    tick(10);  //set a time out to wait for the get all method
+
+    // then
+    expect(service.updateFailMessage).toBe("update fail because web api error");
+  }));
+
   it('should delete todo item', () => {
     const id = service.todoItems[0].id;
     service.DeleteTodoItem(id);

@@ -57,7 +57,7 @@ export class TodoService {
     this.todoHttpService.Update(updateTodoItems).subscribe(updateTodoItems => {
       console.log(updateTodoItems);
       this.updateFailMessage = ''; },
-    error => this.createFailMessage = "update fail because web api error");
+    error => this.updateFailMessage = "update fail because web api error");
   }
 
   public DeleteTodoItem(id: number):void{

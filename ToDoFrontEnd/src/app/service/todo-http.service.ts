@@ -11,6 +11,6 @@ export class TodoHttpService {
   constructor(private httpClient: HttpClient) { }
 
   public GetAll(): Observable<Array<ToDoItem>> {
-    return this.httpClient.get<Array<ToDoItem>>('http://localhost:5001/ToDoItem');
+    return this.httpClient.get<Array<ToDoItem>>('https://localhost:5001/ToDoItem');
   }
 }

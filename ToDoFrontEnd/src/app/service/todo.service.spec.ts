@@ -1,23 +1,27 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { defer, of } from 'rxjs';
-import { ToDoItem } from '../model/ToDoItem';
-import { TodoStoreService } from './todo-store.service';
-import { TodoService } from './todo.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { defer, of } from 'rxjs';
+import { ToDoItem } from '../model/ToDoItem';
+import { TodoHttpService } from './todo-http.service';
+import { TodoStoreService } from './todo-store.service';
+import { TodoService } from './todo.service';
 
 describe('TodoService', () => {
 
   let service: TodoService;
   let httpClientSpy: { get: jasmine.Spy };
   let todoStoreService: TodoStoreService;
+  let todoHttpService: TodoHttpService;
 
   beforeEach(() => {
     // TODO: spy on other methods too
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put']);
     todoStoreService = new TodoStoreService();
+    todoHttpService = new TodoHttpService(<any>httpClientSpy);
 
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TodoService);
+    service = new TodoService(todoStoreService, todoHttpService);
+    // TestBed.configureTestingModule({});
+    // service = TestBed.inject(TodoService);
   });
 
   it('should be created', () => {

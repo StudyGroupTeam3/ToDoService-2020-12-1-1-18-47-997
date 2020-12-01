@@ -16,7 +16,7 @@ export class TodoService {
   private _todoItems: Array<ToDoItem>;
 
   constructor(private todoStore: TodoStoreService,
-    private todoHttpService: TodoHttpService) {
+              private todoHttpService: TodoHttpService) {
     this._todoItems = todoStore.GetAll();
     this.updatingToDoItem = new ToDoItem(-1, "", "", false);
     this.selectedTodoItem = new ToDoItem(-1, "", "", false);
@@ -45,7 +45,8 @@ export class TodoService {
 
   public Create(todoItem: ToDoItem) {
     todoItem.id = this.currentId;
-    var newTodoItem = Object.assign({}, todoItem);
+    // tslint:disable-next-line: prefer-const
+    let newTodoItem = Object.assign({}, todoItem);
     this.todoStore.Create(newTodoItem);
     this.currentId++;
   }

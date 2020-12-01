@@ -82,6 +82,14 @@ export class TodoService {
   }
 
   public SetSelectedTodoItemId(id: number): void {
-    this.selectedTodoItem = this.todoStore.FindById(id);
+    this.todoHttpService.GetById(id).subscribe(
+      todoItem => {
+        this.selectedTodoItem = todoItem;
+        this.getAllFailMessage = '';
+      },
+      error => {
+        this.getAllFailMessage = 'GetById fails bucause webapi error';
+      }
+    );
   }
 }

@@ -124,8 +124,9 @@ describe('TodoService', () => {
   }));
 
   it('should get special todo item', () => {
-    const id = service.todoItems[4].id;
-    service.SetSelectedTodoItemId(id);
-    expect(service.selectedTodoItem.id).toBe(id);
+    const expectedTodoItem = new ToDoItem(10, "update todo", "update todo description", false);
+    httpClientSpy.get.and.returnValue(of(expectedTodoItem));
+    service.SetSelectedTodoItemId(expectedTodoItem.id);
+    expect(httpClientSpy.get.calls.count()).toBe(1);
   });
 });

@@ -27,4 +27,8 @@ export class TodoHttpService {
   public Update(updateToDoItem: ToDoItem): Observable<ToDoItem> {
     return this.httpClient.put<ToDoItem>('https://localhost:5001/ToDoItem', updateToDoItem, httpOptions);
   }
+
+  public Delete(id: Number): Observable<ToDoItem> {
+    return this.httpClient.delete<ToDoItem>(`https://localhost:5001/ToDoItem?id=${id}`, httpOptions);
+  }
 }

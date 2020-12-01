@@ -70,7 +70,12 @@ export class TodoService {
   }
 
   public DeleteTodoItem(id: number): void {
-    this.todoStore.Delete(id);
+    this.todoHttpService.Delete(id).subscribe(
+      (todoItem: any) => {
+        console.log(todoItem);
+        this.getAllFailMessage = '';
+      }
+    );
   }
 
   public SetSelectedTodoItemId(id: number): void {

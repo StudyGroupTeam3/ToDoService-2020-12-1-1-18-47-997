@@ -28,6 +28,7 @@ export class TodoService {
     this.todoHttpService.GetAll().subscribe(
       todoItems => {
         allToDoItem.push(...todoItems);
+        this.getAllFailMessage = '';
       },
       error => {
         this.getAllFailMessage = 'Get all fails bucause webapi error';
@@ -48,6 +49,7 @@ export class TodoService {
     this.todoHttpService.Create(todoItem).subscribe(
       todoItem => {
         console.log(todoItem);
+        this.getAllFailMessage = '';
       },
       error => {
         this.getAllFailMessage = 'Create fails bucause webapi error';

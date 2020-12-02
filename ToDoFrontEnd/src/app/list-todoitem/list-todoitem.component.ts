@@ -28,6 +28,7 @@ export class ListTodoitemComponent implements OnInit {
 
   public deleteTodoItem(id: number): void {
     this.todoService.DeleteTodoItem(id);
+    this.toDoItems = this.todoService.todoItems;
   }
 
   public selectTodoItem(id: number): void {
@@ -35,7 +36,7 @@ export class ListTodoitemComponent implements OnInit {
     //this.todoService.SetSelectedTodoItemId(id);
   }
 
-  public reload(): void {
-      window.location.reload();
-  }
+  // public reload(): void {
+  //    window.location.reload();
+  // }
 }

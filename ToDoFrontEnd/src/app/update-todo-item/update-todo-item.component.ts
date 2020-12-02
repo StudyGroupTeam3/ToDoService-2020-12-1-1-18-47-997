@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ToDoItem } from '../model/ToDoItem';
 import { TodoService } from '../service/todo.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-update-todo-item',
@@ -9,13 +9,16 @@ import { TodoService } from '../service/todo.service';
 })
 export class UpdateTodoItemComponent implements OnInit {
 
-  constructor(public todoItemService: TodoService) { 
+  constructor(public todoItemService: TodoService,
+              private router: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    const id = this.router.snapshot.paramMap.get('id');
+    this.todoItemService.SetUpdatingTodoItemId(Number(id));
   }
 
-  public updateTodoItem(): void{
+  public updateTodoItem(): void {
     this.todoItemService.UpdateTodoItem(this.todoItemService.updatingToDoItem);
   }
 }

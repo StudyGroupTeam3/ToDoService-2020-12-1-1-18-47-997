@@ -1,7 +1,9 @@
+import { UpdateTodoItemComponent } from './../update-todo-item/update-todo-item.component';
 import { ToDoItem } from './../model/ToDoItem';
 import { TodoHttpService } from './todo-http.service';
 import { Injectable } from '@angular/core';
 import { TodoStoreService } from './todo-store.service';
+import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +39,15 @@ export class TodoService {
   }
 
   public SetUpdatingTodoItemId(id: number): void {
-    const foundTodoItem = this.todoStore.FindById(id);
+    // const foundTodoItem = this.todoStore.FindById(id);
+    this.todoHttpService.getById(id).subscribe(item => {
+      const foundTodoItem = item;
+      if (foundTodoItem !== undefined) {
+        this.updatingToDoItem = Object.assign({}, foundTodoItem);
+      }
+    });
 
-    if (foundTodoItem !== undefined) {
-      this.updatingToDoItem = Object.assign({}, foundTodoItem);
-    }
+
   }
 
   public Create(todoItem: ToDoItem) {
@@ -67,7 +73,7 @@ export class TodoService {
   public DeleteTodoItem(id: number): void {
     this.deleteError = '';
     this.todoHttpService.delete(id).subscribe(item => {
-      console.log(item);
+      console.log(item); this.reload();
     }, error => {
       this.deleteError = 'delete error';
     });
@@ -80,5 +86,9 @@ export class TodoService {
     }, error => {
       this.getByIdError = 'get by id error';
     });
+  }
+
+  private reload() {
+    window.location.reload();
   }
 }

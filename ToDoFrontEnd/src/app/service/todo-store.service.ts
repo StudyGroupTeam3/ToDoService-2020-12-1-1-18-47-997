@@ -27,20 +27,20 @@ export class TodoStoreService {
     return foundTodoItem;
   }
 
-  public Create(newTodoItem: ToDoItem): void{
+  public Create(newTodoItem: ToDoItem): void {
     this._todoItems.push(newTodoItem);
   }
 
-  public Update(updateTodoItem: ToDoItem): void{
+  public Update(updateTodoItem: ToDoItem): void {
     const foundTodoItem = this._todoItems.find(item => item.id === updateTodoItem.id);
     if (foundTodoItem) {
       foundTodoItem.description = updateTodoItem.description;
       foundTodoItem.isDone = updateTodoItem.isDone;
       foundTodoItem.title = updateTodoItem.title;
-    }    
+    }
   }
 
-  public Delete(id: number): void{
+  public Delete(id: number): void {
     const index = this._todoItems.findIndex(item => item.id === id);
     if (index >= 0) {
       this._todoItems.splice(index, 1);
